@@ -6,7 +6,7 @@
 /*   By: lnenita <lnenita@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/24 23:08:21 by lnenita           #+#    #+#             */
-/*   Updated: 2019/04/24 23:15:28 by lnenita          ###   ########.fr       */
+/*   Updated: 2019/04/25 13:21:17 by lnenita          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	ft_strcmp(const char *str1, const char *str2)
 {
-	int		i;
+	int				i;
 	unsigned char	*s1;
 	unsigned char	*s2;
 

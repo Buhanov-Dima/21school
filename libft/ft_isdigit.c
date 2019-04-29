@@ -1,23 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_isdigit.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lnenita <lnenita@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lnenita <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/04/24 14:43:49 by lnenita           #+#    #+#             */
-/*   Updated: 2019/04/27 05:30:14 by lnenita          ###   ########.fr       */
+/*   Created: 2019/04/25 12:27:13 by lnenita           #+#    #+#             */
+/*   Updated: 2019/04/25 12:32:46 by lnenita          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-size_t	ft_strlen(const char *str)
+int	ft_isdigit(int c)
 {
-	size_t i;
-
-	i = 0;
-	while (str[i])
-		i++;
-	return (i);
+	if (c >= '0' && c <= '9')
+		return (1);
+	else
+		return (0);
 }

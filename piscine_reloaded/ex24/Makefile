@@ -11,16 +11,17 @@
 # **************************************************************************** #
 
 NAME = libft.a
-SRCS = srcs/ft_putchar.c srcs/ft_putstr.c srcs/ft_strcmp.c srcs/ft_strlen.c srcs/ft_swap.c
-OBJECTS = ft_putchar.o ft_putstr.o ft_strcmp.o ft_strlen.o ft_swap.o
-HEADERS_FOLDER = includes
+SRC = ./srcs/
+HEADER = ./includes/*.h
+FLAGS = -Wall -Wextra -Werror
+OPTION = -c $(HEADER)
+FILES = $(SRC)ft_putchar.c $(SRC)ft_putstr.c $(SRC)ft_strcmp.c $(SRC)ft_strlen.c $(SRC)ft_swap.c
 
-all: make
+all: $(NAME)
 
-make_lib:
-	gcc -I$(HEADERS_FOLDER) -c $(SRCS)
-	ar -rv $(NAME) $(OBJECTS)
-	ranlib $(NAME)
+$(NAME):
+	gcc $(FLAGS) $(OPTION) $(FILES) $(HEADER)
+	ar rc $(NAME) *.o
 
 clean:
 	/bin/rm -f *.o

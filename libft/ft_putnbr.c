@@ -1,35 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strnstr.c                                       :+:      :+:    :+:   */
+/*   ft_putnbr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lnenita <lnenita@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/04/24 22:28:32 by lnenita           #+#    #+#             */
-/*   Updated: 2019/04/27 05:16:18 by lnenita          ###   ########.fr       */
+/*   Created: 2019/04/27 00:25:00 by lnenita           #+#    #+#             */
+/*   Updated: 2019/04/27 05:43:45 by lnenita          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strnstr(const char *str, const char *find, size_t n)
+void	ft_putnbr(int n)
 {
-	size_t i;
-	size_t j;
+	unsigned int	res;
 
-	i = 0;
-	if (*find == 0)
-		return ((char *)str);
-	while (str[i] != '\0')
+	if (n < 0)
 	{
-		j = 0;
-		while (find[j] == str[i + j] && (i + j < n))
-		{
-			if (find[j + 1] == '\0')
-				return ((char *)str + i);
-			j++;
-		}
-		i++;
+		n = n * (-1);
+		write(1, "-", 1);
 	}
-	return (NULL);
+	res = n;
+	if (res < 10)
+		ft_putchar(res + 48);
+	if (res >= 10)
+	{
+		ft_putnbr(res / 10);
+		ft_putnbr(res % 10);
+	}
 }

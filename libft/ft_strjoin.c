@@ -1,35 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strnstr.c                                       :+:      :+:    :+:   */
+/*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lnenita <lnenita@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/04/24 22:28:32 by lnenita           #+#    #+#             */
-/*   Updated: 2019/04/27 05:16:18 by lnenita          ###   ########.fr       */
+/*   Created: 2019/04/24 18:01:39 by lnenita           #+#    #+#             */
+/*   Updated: 2019/04/27 02:33:14 by lnenita          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strnstr(const char *str, const char *find, size_t n)
+char	*ft_strjoin(char const *s1, char const *s2)
 {
-	size_t i;
-	size_t j;
+	char	*str;
+	size_t	i;
+	size_t	j;
 
-	i = 0;
-	if (*find == 0)
-		return ((char *)str);
-	while (str[i] != '\0')
+	if ((!s1 || !s2) || (!s1 && !s2))
+		return (NULL);
+	j = 0;
+	i = ft_strlen(s1) + ft_strlen(s2);
+	if (!(str = (char *)ft_memalloc(sizeof(char) * i + 1)))
+		return (NULL);
+	while (i > 0)
 	{
-		j = 0;
-		while (find[j] == str[i + j] && (i + j < n))
-		{
-			if (find[j + 1] == '\0')
-				return ((char *)str + i);
-			j++;
-		}
-		i++;
+		if (*s1)
+			str[j] = *s1++;
+		else if (*s2)
+			str[j] = *s2++;
+		j++;
+		i--;
 	}
-	return (NULL);
+	str[j] = '\0';
+	return (str);
 }

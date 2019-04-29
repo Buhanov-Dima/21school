@@ -1,39 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memmove.c                                       :+:      :+:    :+:   */
+/*   ft_strtrim.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lnenita <lnenita@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/04/23 13:43:19 by lnenita           #+#    #+#             */
-/*   Updated: 2019/04/27 02:08:24 by lnenita          ###   ########.fr       */
+/*   Created: 2019/04/26 18:59:44 by lnenita           #+#    #+#             */
+/*   Updated: 2019/04/26 19:54:01 by lnenita          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	*ft_memmove(void *dest, const void *src, size_t len)
+char	*ft_strtrim(char const *s)
 {
-	size_t			i;
-	unsigned char	*s;
-	unsigned char	*d;
+	int		i;
+	int		end;
+	char	*arr;
 
-	s = (unsigned char *)src;
-	d = (unsigned char *)dest;
-	i = 0;
-	if (dest == NULL && src == NULL)
+	if (s == NULL)
 		return (NULL);
-	if (src == dest)
-		return (dest);
-	if (s > d)
-		d = ft_memcpy(d, s, len);
-	else
-	{
-		while (len > 0)
-		{
-			len--;
-			d[len] = s[len];
-		}
-	}
-	return (d);
+	end = ft_strlen(s) - 1;
+	i = 0;
+	while (s[i] == 32 || s[i] == 9 || s[i] == 10)
+		i++;
+	if (s[i] == '\0')
+		return (ft_strnew(1));
+	while (s[end] == 32 || s[end] == 9 || s[end] == 10)
+		end--;
+	arr = (char *)malloc(sizeof(char) * (end - i + 2));
+	if (arr == NULL)
+		return (NULL);
+	arr = ft_strncpy(arr, &s[i], end - i + 1);
+	arr[end - i + 1] = '\0';
+	return (arr);
 }
