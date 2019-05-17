@@ -6,7 +6,7 @@
 /*   By: lnenita <lnenita@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/03 19:39:39 by lnenita           #+#    #+#             */
-/*   Updated: 2019/05/08 03:56:12 by lnenita          ###   ########.fr       */
+/*   Updated: 2019/05/18 01:20:52 by lnenita          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,70 +16,65 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+#define BUFF_SIZE 10
 
-#define BUFF_SIZE 3
-
-char	*ft_strsub_nl(char const *s, unsigned int start, size_t len)
+int ft_nextline(char **arr, char **line)
 {
-	char	*res;
-	size_t	i;
+    int     i;
+    char    *tmp;
 
-	if (s == NULL)
-		return (NULL);
-	if (start > ft_strlen(s))
-		return (NULL);
-	if (!(res = (char*)malloc(sizeof(char) * (len + 1))))
-		return (NULL);
-	i = 0;
-	while (i < len && s[start] != '\0')
-	{
-		res[i] = s[start];
-        if (res[i] == '\n')
-            break ;
-		start++;
-		i++;
-	}
-    res[i + 1] = '\0';
-	return (res);
+    i = 0;
+    while (*arr != NULL && (*arr)[i] != '\n' && (*arr)[i] != '\0')
+        i++;
+    if (*arr != NULL && (*arr)[i] == '\n')
+    {
+        *line = ft_strsub((*arr), 0, i);
+        tmp = ft_strsub((*arr), i + 1, (ft_strlen((*arr)) - i));
+        ft_strdel(*(&arr));
+        (*arr) = tmp;
+        return (1);
+    }
+    else if (*arr != NULL && (*arr)[i] == '\0')
+    {
+        *line = ft_strdup(*arr);
+        ft_strdel(arr);
+        return (1);
+    }
+    else
+        return (0);
 }
 
-
-int get_next_line(const int fd, char **line)
+int     get_next_line(const int fd, char **line)
 {
-    int ret;
-    char tmp[BUFF_SIZE + 1]; // размер буффера + 1 для конца строки
-    char *str; // новая строка в которую помещяем прочитанню строку
-    char *cache;
-//    int ch = 10;
-//    int ldt = -1; // счетчик нужно убрать
-    int i = 0;
-    cache = ft_strnew(0);
-    line = NULL; // зануляем массив для компила без ошибок --> в дальнейшем запишем с fd строки через этот массив
-    while ((ret = read(fd, tmp, BUFF_SIZE)) > 0) // проверка на размер прочитанного буффера --> будет равен 0 после прочтения всего файла
+    static char *arr[9999];
+    char        *str;
+    char        tmp[BUFF_SIZE + 1];
+    int         ret;
+    
+    while ((ret = read(fd, tmp, BUFF_SIZE)) > 0)
     {
-        tmp[ret] = '\0'; // добавялем конец строки для прочитанного кол-ва символов буффера
-        if (str == NULL)
-            str = ft_strnew(0); // исправлен на 0, до этого мог принимать только x > 0 создается для того что бы не подхватывал из памяти мусор
-        str = ft_strjoin(str, tmp); //сливаем 2 строки в одну, к новой созданной добавляем прочитанную из буффера
-
-        if (ft_strchr(str, '\n')) // проверяем созданную строку на \n если 1 то есть '\n'
-        {
-            //cache = ft_strchr(str, '\n');
-            str = ft_strsub_nl(str, 0, ft_strlen(str)); // записываем строку с нулевого индекса(строка, index start, длина строки)
-            printf("str%d == %s\n", i + 1, str);
-            ft_memdel((void **)&str); // очищаем память обнуляем строку
-        }
-        i++;
-        printf("str == %d\n", i);
+        tmp[ret] = '\0';
+        if (arr[fd] == NULL)
+            arr[fd] = ft_strnew(1);
+        str = ft_strjoin(arr[fd], tmp);
+        free(arr[fd]);
+        arr[fd] = str;
+        if (ft_strchr(arr[fd], '\n'))
+            break ;
     }
-    return (0);
+    return (ft_nextline(&arr[fd], line));
 }
 
 int main(void)
 {
-    int fd;
-    char **arr = NULL;
-    fd = open("test", O_RDONLY);
-    get_next_line(fd, arr);
-    return (0);
+    char *arr;
+    int fd = open("test", O_RDONLY);
+    int j;
+    arr = NULL;
+    while ((j = get_next_line(fd, &arr)) >= 0)
+    {
+        printf("%s\n", arr);
+        if(j == 0)
+            break;
+    }
 }
