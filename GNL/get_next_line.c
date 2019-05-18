@@ -6,7 +6,7 @@
 /*   By: lnenita <lnenita@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/18 01:28:18 by lnenita           #+#    #+#             */
-/*   Updated: 2019/05/19 01:06:17 by lnenita          ###   ########.fr       */
+/*   Updated: 2019/05/19 02:15:49 by lnenita          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,16 +26,13 @@ int ft_nextline(char **arr, char **line)
         tmp = ft_strsub(*arr, i + 1, (ft_strlen(*arr) - i));
         ft_strdel(arr);
         *arr = tmp;
-        return (1);
     }
     else if (*arr != NULL && (*arr)[i] == '\0')
     {
         *line = ft_strsub(*arr, 0, i);
         ft_strdel(arr);
-        return (0);
     }
-    else
-        return (0);
+    return (1);
 }
 
 int     get_next_line(const int fd, char **line)
@@ -60,7 +57,7 @@ int     get_next_line(const int fd, char **line)
     }
     if (ret < 0)
         return (-1);
-    if (!ret && !arr[fd])
+    if (ret == 0 && (arr[fd] == NULL || arr[fd][0] == '\0'))
         return (0);
     return (ft_nextline(&arr[fd], line));
 }
