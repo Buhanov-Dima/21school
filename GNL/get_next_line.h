@@ -6,19 +6,23 @@
 /*   By: lnenita <lnenita@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/14 17:20:53 by lnenita           #+#    #+#             */
-/*   Updated: 2019/05/14 22:07:44 by lnenita          ###   ########.fr       */
+/*   Updated: 2019/05/18 22:26:57 by lnenita          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
-# define BUF_SIZE 1
-# include <fcntl.h>
-# include <stdio.h>
-# include <stdlib.h>
+# define BUFF_SIZE 10000
+# define MAX_FD_SIZE 10240
 
-int     get_next_line(const int fd, char **line);
-int     ft_newline(char **arr, char **line, int ret);
+# include "libft/libft.h"
+# include "fcntl.h"
+# include "sys/types.h"
+# include "sys/uio.h"
+# include "unistd.h"
+# include "stdlib.h"
 
+int     ft_nextline(char **arr, char **line);
+int		get_next_line(const int fd, char **line);
 
 #endif
