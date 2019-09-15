@@ -1,0 +1,73 @@
+CREATE FILE IN /etc/iptables.sh
+
+/etc/iptables.sh - changing:
+
+—————————————————————————————————————————————————————————————————————————————————————————
+
+export PT=iptables
+
+$PT -P INPUT DROP
+$PT -P FORWARD DROP
+$PT -P OUTPUT ACCEPT
+
+$PT -F
+$PT -X
+$PT -t mangle -F
+$PT -t mangle -X
+
+*****(I don’t know about cleaning NAT table, I’am thinking about it)*****
+
+$PT-A INPUT -p all -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+$PT-A FORWARD -p all -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+$PT-A OUTPUT -p all -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+$PT -t mangle -A PREROUTING -m state --state INVALID -j DROP
+$PT -t mangle -A PREROUTING -p tcp -m tcp --tcp-flags SYN,ACK SYN,ACK -m state --state NEW -j DROP
+$PT -t mangle -A PREROUTING -p tcp ! --syn -m state --state NEW -j DROP
+$PT -t mangle -A PREROUTING -p tcp -m tcp --tcp-flags ALL FIN,URG,PSH -j DROP
+$PT -t mangle -A PREROUTING -p tcp -m tcp --tcp-flags ALL ALL -j DROP
+$PT -t mangle -A PREROUTING -p tcp -m tcp --tcp-flags ALL SYN,RST,ACK,FIN,URG -j DROP
+$PT -t mangle -A PREROUTING -p tcp -m tcp --tcp-flags ALL NONE -j DROP
+$PT -t mangle -A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP
+$PT -t mangle -A PREROUTING -p tcp -m tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
+$PT -t mangle -A PREROUTING -p tcp -m tcp ! --tcp-flags FIN,SYN,RST,ACK SYN -m state --state NEW -j DROP
+$PT -t mangle -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG FIN,PSH,URG -j DROP
+$PT -t mangle -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG FIN,SYN,RST,PSH,ACK,URG -j DROP
+$PT -t mangle -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG FIN,SYN,RST,ACK,URG -j DROP
+$PT -t mangle -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP
+$PT -t mangle -A PREROUTING -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP
+$PT -t mangle -A PREROUTING -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
+
+$PT -N ports
+$PT -A ports -p tcp -i enp0s3 --dport 2222 -j ACCEPT
+$PT -A ports -p tcp -i enp0s3 --dport 80 -j ACCEPT
+$PT -A ports -p tcp -i enp0s3 --dport 443 -j ACCEPT
+$PT -A ports -i enp0s3 -p tcp —dport 25 -j ACCEPT
+$PT -A INPUT -i lo -j ACCEPT
+
+$PT -N scan
+$PT -A scan -p tcp --dport 2222 -limit --limit 10/s --limit-burst 2 -j RETURN
+$PT -A scan -j DROP
+
+$PT -A INPUT -p tcp --dport 2222 -m conntrack --ctstate NEW -m recent --set
+$PT -A INPUT -p tcp --dport 2222 -m conntrack --ctstate NEW -m recent --update --seconds 60 --hitcount 10 -j DROP
+
+$PT -A INPUT -j ports
+$PT -A INPUT -j scan
+$PT -A INPUT -p tcp -m tcp —tcp-flags SYN,ACK,FIN,RST RST -m limit —limit 1/s -j ACCEPT
+
+$PT -A INPUT -s ! 192.168.20.0/255.255.252.0 -p icmp --icmp-type echo-request -j DROP
+
+/sbin/iptables-save > /etc/iptables_rules
+
+
+—————————————————————————————————————————————————————————————————————————————————————————
+
+
+In the /etc/network/interfaces add 1 line under “iface enp0s3 inet static” :
+
+pre-up iptables-restore < /etc/iptables_rules
+
+sudo fail2ban restart
+
+AND THEN WE NEED TO REBOOT A MACHINE
